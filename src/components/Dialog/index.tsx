@@ -1,5 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useState, useContext } from 'react';
+
 import useMediaQuery from '@mui/material/useMediaQuery';
+
+import {ExamContext} from '../../contexts/ExamContext'
+
 import { useTheme } from '@mui/material/styles';
 import { 
   Icon, 
@@ -8,18 +12,18 @@ import {
   DialogActions, 
   DialogContent, 
   DialogTitle, 
-  DialogContentText
+  DialogContentText,
 } from '@mui/material';
-import { Exam } from '../../models';
 
-export function ResponsiveDialog(exam: Exam) {
-
+export function ResponsiveDialog() {
   const [open, setOpen] = useState(false);
   const theme = useTheme();
+  const context = useContext(ExamContext);
   const fullScreen = useMediaQuery(theme.breakpoints.only('md'));
 
   const handleClickOpen = () => {
     setOpen(true);
+    context.exam?.questions()
   };
 
   const handleClose = () => {
@@ -28,11 +32,7 @@ export function ResponsiveDialog(exam: Exam) {
 
   const touchClosed = () => {
     setOpen(false);
-  } 
-
-  const memoTotalQuestions = useCallback(() => {
-    return `${exam.data?.answeredItems}/${exam.data?.itemsTotal} questões`;
-  }, [exam]);
+  };
 
   return (
     <div>
@@ -45,9 +45,9 @@ export function ResponsiveDialog(exam: Exam) {
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle id="responsive-dialog-title">
-          {memoTotalQuestions}
-          <IconButton onClick={touchClosed} sx={{display: 'flex', alignItems: 'flex-end'}}>
+        <DialogTitle id="responsive-dialog-header">
+        
+          <IconButton onClick={touchClosed} sx={{display: 'flex', alignItems: 'flex-end'}} >
             <Icon >close</Icon>
           </IconButton>
         </DialogTitle>
@@ -60,6 +60,6 @@ export function ResponsiveDialog(exam: Exam) {
         <DialogActions>
         </DialogActions>
       </Dialog>
-    </div>
+      </div>
   );
 }

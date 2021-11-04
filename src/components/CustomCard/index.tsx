@@ -8,7 +8,6 @@ import {
   Button,
   Icon,
   useTheme,
-  Box,
 } from "@mui/material";
 import { parseISO, format } from "date-fns";
 
@@ -16,7 +15,7 @@ import { Exam } from "../../models";
 
 import { BorderLinearProgress, StyledBox } from "./styles";
 import { useHistory } from "react-router";
-
+import {} from "../../contexts";
 export interface CustomCardProps {
   exam: Exam;
   onSelectExam(exam: Exam): void;
@@ -27,9 +26,9 @@ export function CustomCard({
   onSelectExam,
 }: CustomCardProps): JSX.Element {
   const theme = useTheme();
-  const history = useHistory()
+  const history = useHistory();
 
-  console.log({exam})
+  console.log({ exam });
 
   const memoExamColor = useMemo(() => {
     return exam.type === "EXAM" ? "#5653FF" : theme.palette.secondary.main;
@@ -37,19 +36,25 @@ export function CustomCard({
 
   const handleSelectExam = useCallback(() => {
     onSelectExam(exam);
-    history.push('/exams')
+    history.push("/exams");
   }, [onSelectExam, exam, history]);
 
   const memoHour = useCallback(() => {
-    return format(parseISO((exam?.events?.date || new Date().toISOString()) as string), "HH:mm:ss");
+    return format(
+      parseISO((exam?.events?.date || new Date().toISOString()) as string),
+      "HH:mm:ss"
+    );
   }, [exam?.events?.date]);
 
   const memoDate = useCallback(() => {
-    const fromDate = format(parseISO((exam.events.date || new Date().toISOString()) as string), "dd/MM/yy");
+    const fromDate = format(
+      parseISO((exam.events.date || new Date().toISOString()) as string),
+      "dd/MM/yy"
+    );
     const toDate = format(
       parseISO((exam.events.limitDate || new Date().toISOString()) as string),
       "dd/MM/yy"
-    ); 
+    );
 
     return `De ${fromDate} a ${toDate}`;
   }, [exam?.events?.date, exam?.events?.limitDate]);
@@ -60,7 +65,7 @@ export function CustomCard({
 
   return (
     <Card
-      sx={{ 
+      sx={{
         width: 300,
         marginTop: 3.5,
         boxShadow: "0 0 3px 1px rgba(0, 0, 0, 0.2)",
@@ -76,18 +81,18 @@ export function CustomCard({
               boxShadow: "none",
               backgroundColor: memoExamColor,
               color: theme.palette.common.white,
-            }}  
+            }}
           >
             {exam.name}
           </Button>
-          <Typography 
+          <Typography
             sx={{ fontSize: 22, marginBottom: 4 }}
             variant="h1"
             component="div"
             color="text.primary"
             gutterBottom
           >
-             {exam.description}
+            {exam.description}
           </Typography>
           <BorderLinearProgress
             variant="determinate"
@@ -96,25 +101,21 @@ export function CustomCard({
             sx={{ height: 6, borderRadius: 0.5 }}
           />
           <StyledBox display="flex" alignItems="center">
-            <Box display="flex" alignItems="center" >
-              <Icon>access_time</Icon>
-              <Typography
-                variant="subtitle2"
-                sx={{ color: (theme) => theme.palette.grey[500] }}
-              >
-                {memoHour}
-              </Typography>
-            </Box>
-            <Box display="flex" alignItems="center">
-              <Icon>apps</Icon>
-              <Typography
-                variant="subtitle2"
-                sx={{ color: (theme) => theme.palette.grey[500] }}
-              >
-               {memoTotalQuestions}
-              </Typography>
-            </Box>
-          </StyledBox> 
+            <Icon>access_time</Icon>
+            <Typography
+              variant="subtitle2"
+              sx={{ color: (theme) => theme.palette.grey[500] }}
+            >
+              {memoHour}
+            </Typography>
+            <Icon>apps</Icon>
+            <Typography
+              variant="subtitle2"
+              sx={{ color: (theme) => theme.palette.grey[500] }}
+            >
+              {memoTotalQuestions}
+            </Typography>
+          </StyledBox>
           <Typography
             variant="subtitle2"
             sx={{ color: (theme) => theme.palette.grey[500] }}

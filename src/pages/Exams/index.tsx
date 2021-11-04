@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 
-import {ResponsiveDialog} from '../../components/Dialog';
+import { ResponsiveDialog } from "../../components/Dialog";
 
 import {
   Typography,
@@ -15,14 +15,11 @@ import {
   Skeleton,
 } from "@mui/material";
 
-import {useTimer, useNotify} from '../../hooks';
-import { Exam } from "../../models";
+import { useTimer, useNotify } from "../../hooks";
 
-export function Exams(exam: Exam) {
-  const {timer, start} = useTimer(25);
+export function Exams() {
+  const { timer, start } = useTimer(25);
   const notify = useNotify();
-
-  console.log({exam})
 
   const [eyeIcon, setEyeIcon] = useState<"visibility_off" | "visibility">(
     "visibility_off"
@@ -43,8 +40,10 @@ export function Exams(exam: Exam) {
 
   useEffect(() => {
     start();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
 
   const handleTouchSave = useCallback(() => {
     setSaveIcon((oldState) => {
@@ -55,10 +54,9 @@ export function Exams(exam: Exam) {
       return "turned_in";
     });
 
-    if (saveIcon === 'turned_in_not') {
-      notify('Marcada para revisar mais tarde')
+    if (saveIcon === "turned_in_not") {
+      notify("Marcada para revisar mais tarde");
     }
-
   }, [notify, saveIcon]);
 
   return (
@@ -81,23 +79,26 @@ export function Exams(exam: Exam) {
             justifyContent: "space-between",
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Box display="flex" alignItems="center">
             <IconButton size="large" onClick={handleToggleVisibility}>
               <Icon color="primary">{eyeIcon}</Icon>
             </IconButton>
-            <Typography sx={{ marginLeft: (theme) => theme.spacing(1)}}>
-              {eyeIcon === "visibility" ? timer : (
-                <Skeleton animation="wave"
-                height={20} width={62} 
-                sx={{ transform: "none" }}/>
+            <Typography sx={{ marginLeft: (theme) => theme.spacing(1) }}>
+              {eyeIcon === "visibility" ? (
+                timer
+              ) : (
+                <Skeleton
+                  animation="wave"
+                  height={20}
+                  width={62}
+                  sx={{ transform: "none" }}
+                />
               )}
             </Typography>
-          </Box>  
-          <IconButton size="large">
-              <ResponsiveDialog description={exam.description}
-               name={exam.name} type={"SIMULATED"}
-              data={exam.data} events={exam.events}/>
-           <Typography sx={{fontSize: 15}}> Questões </Typography>
+          </Box>
+          <IconButton size="large" disableRipple>
+            <ResponsiveDialog />
+            <Typography sx={{ fontSize: 15 }}>Questões</Typography>
           </IconButton>
           <Button
             component="span"
@@ -118,42 +119,61 @@ export function Exams(exam: Exam) {
           sx={{
             height: 6,
             borderRadius: 0.5,
-            backgroundColor: (theme) => theme.palette.grey[500],
+            backgroundColor: (theme) => theme.palette.grey[300],
           }}
         />
       </AppBar>
-        <Paper sx={{display: 'flex', flexDirection: "column", padding: 3.75}} elevation={0}>
-          <Box display="flex" justifyContent="space-between" paddingBottom={1}>
+      <Paper
+        sx={{ display: "flex", flexDirection: "column", padding: 3.75 }}
+        elevation={0}
+      >
+        <Box display="flex" justifyContent="space-between" paddingBottom={1}>
           <Typography>1</Typography>
           <Typography>
-            <IconButton size="large" sx={{padding: 0}} onClick={handleTouchSave}>
+            <IconButton
+              size="large"
+              sx={{ padding: 0 }}
+              onClick={handleTouchSave}
+            >
               <Icon color="primary">{saveIcon}</Icon>
             </IconButton>
           </Typography>
-          </Box>
-          <Button
-            component="span"
-            variant="outlined"
-            sx={{
-              paddingLeft: (theme) => theme.spacing(3),
-              paddingRight: (theme) => theme.spacing(3),
-            }}
-            startIcon={<Icon>arrow_back_ios</Icon>}
-          >
-            Anterior
-          </Button>
-          <Button
-            component="span"
-            variant="contained"
-            sx={{
-              paddingLeft: (theme) => theme.spacing(3),
-              paddingRight: (theme) => theme.spacing(3),
-            }}
-            endIcon={<Icon>arrow_forward_ios</Icon>}
-          >
-            Proximo
-          </Button>
-        </Paper>
+        </Box>
+        <div
+          dangerouslySetInnerHTML=
+          {{
+            __html: '<div class="c-exercise__text"><div><h2>&nbsp;<img alt=""src=""></h2></div><div><p>GLASBERGEN, R. Disponível em: www.glasbergen.com. Acesso em: 3 jul. 2015 (adaptado).</p><p>No cartum, a crítica está no fato de a sociedade exigir do adolescente que</p></div>',
+          }}
+        >
+
+        </div>
+        <Box display="flex" 
+        alignItems="center"
+        justifyContent="center"
+        paddingTop={9.75}
+        >
+        <Button
+          component="span"
+          variant="outlined"
+          sx={{
+
+          }}
+          startIcon={<Icon>arrow_back_ios</Icon>}
+        >
+          Anterior
+        </Button>
+        <Button
+          component="span"
+          variant="contained"
+          sx={{
+
+          }}
+          endIcon={<Icon>arrow_forward_ios</Icon>}
+        >
+          Proximo
+        </Button>
+        </Box>
+      </Paper>
     </>
   );
 }

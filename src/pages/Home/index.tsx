@@ -4,10 +4,13 @@ import { Box } from "@mui/system";
 import { CustomCard } from "../../components/CustomCard";
 import {CustomNextExam} from "../../components/CustomNextExam";
 import {dbData} from "../../db";
-import { Exam, Proof } from "../../models";
+import { Proof } from "../../models";
+import {useExamContext} from '../../contexts';
 
-export function Home(exam: Exam) {
-   console.log({dbData, exam})
+export function Home() {
+  const {updateExam} = useExamContext(); 
+  
+
   return (
     <>
       <Paper
@@ -15,13 +18,12 @@ export function Home(exam: Exam) {
         elevation={0}
       >
         <Box display="flex" alignItems="center" justifyContent="space-between" paddingBottom={2}>
-        {(dbData.proofs as Proof[]).map((proof) => {
-          console.log({exam})
+        {(dbData.proofs as Proof[]).map((proof: Proof) => {
           return (
             <CustomCard
               key={proof.id}
               exam={proof.exam}
-              onSelectExam={console.log}
+              onSelectExam={() => updateExam(proof)}
             /> 
           )
         })}
@@ -36,8 +38,7 @@ export function Home(exam: Exam) {
         elevation={0}
       >
         <Box display="flex" alignItems="center" justifyContent="space-between" paddingBottom={2}>
-        {(dbData.proofs as Proof[]).map((proof) => {
-          console.log({exam})
+        {(dbData.proofs as Proof[]).map((proof: Proof) => {
           return (
             <CustomNextExam
               key={proof.id}
@@ -48,6 +49,7 @@ export function Home(exam: Exam) {
         })}
         </Box>
       </Paper>
+      
       </>
   );
 }

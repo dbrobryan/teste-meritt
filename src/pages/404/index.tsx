@@ -1,4 +1,4 @@
-import {Robot404} from '../../components';
+import { Robot404 } from "../../components";
 
 import { useStyles } from "./styles";
 

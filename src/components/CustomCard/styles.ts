@@ -1,6 +1,8 @@
-import { styled } from '@mui/material/styles';
-import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
-import Box from '@mui/material/Box';
+import { styled } from "@mui/material/styles";
+import LinearProgress, {
+  linearProgressClasses,
+} from "@mui/material/LinearProgress";
+import Box from "@mui/material/Box";
 
 export const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 4,
@@ -13,8 +15,8 @@ export const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   },
 }));
 
-export const StyledBox = styled(Box)(({theme}) => ({
-  '& > * + *': {
+export const StyledBox = styled(Box)(({ theme }) => ({
+  "& > * + *": {
     marginLeft: theme.spacing(2.5),
-  }
-}))
+  },
+}));

@@ -22,7 +22,7 @@ export const dbData = {
           type: "DISSERTATION_NO_RANDOM",
           answers: {
             "5bb8da42-5b47-4e8b-9373-41ba40f12b69": {
-              id_question: "d6995595-57f8-41a8-bd1e-ae611de9e438",
+              id_question: "d6995595-57f8-41a8-bd1e-ae611de9e438", 
               value: "<p>se aposente prematuramente.</p>",
             },
             "a235623e-95bf-410f-90a7-cbd81d4b0021": {
