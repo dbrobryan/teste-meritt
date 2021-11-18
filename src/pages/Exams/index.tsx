@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 
 import { ResponsiveDialog } from "../../components/Dialog";
 
@@ -15,11 +15,15 @@ import {
   Skeleton,
 } from "@mui/material";
 
-import { useTimer, useNotify } from "../../hooks";
+import { useTimer, useNotify,  } from "../../hooks";
+import {useExamContext} from '../../contexts';
 
 export function Exams() {
   const { timer, start } = useTimer(25);
   const notify = useNotify();
+  const {exam} = useExamContext();
+
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
 
   const [eyeIcon, setEyeIcon] = useState<"visibility_off" | "visibility">(
     "visibility_off"
@@ -27,6 +31,29 @@ export function Exams() {
   const [saveIcon, setSaveIcon] = useState<"turned_in_not" | "turned_in">(
     "turned_in_not"
   );
+
+  console.log({exam});
+
+  const memoQuestions = useMemo(() => {
+    return Object.entries<any>(exam?.questions || {}).reduce((accumulator: Record<string, any>[], [key, value]) => {
+      accumulator = [...accumulator, {
+        id: key,
+        ...value,
+        answers: Object.entries<any>(value.answers).reduce((acc: Record<string, any>[], [answerKey, answerValue]) => {
+          acc = [...acc, {
+            id: answerKey,
+            ...answerValue
+          }]
+
+          return acc;
+        }, [])
+      }]
+
+      return accumulator;
+    }, [])
+  }, [exam?.questions])
+
+  console.log({memoQuestions})
 
   const handleToggleVisibility = useCallback(() => {
     setEyeIcon((oldState) => {
@@ -37,6 +64,21 @@ export function Exams() {
       return "visibility";
     });
   }, []);
+
+  const handleChangeQuestion = useCallback((type: 'prev' | 'next') => () => {
+    setCurrentQuestionIndex(oldIndex => {
+      if (type === 'prev' && oldIndex - 1 >= 0) {
+        return oldIndex - 1;
+      }
+  
+      if (type === 'next' && oldIndex + 1 < memoQuestions.length) {
+        return oldIndex + 1
+      }
+
+      return oldIndex;
+
+    })
+  }, [memoQuestions.length])
 
   useEffect(() => {
     start();
@@ -114,7 +156,7 @@ export function Exams() {
         </Toolbar>
         <LinearProgress
           variant="determinate"
-          value={80}
+          value={50}
           valueBuffer={100}
           sx={{
             height: 6,
@@ -139,14 +181,20 @@ export function Exams() {
             </IconButton>
           </Typography>
         </Box>
+        <Box display="flex" justifyContent="center">
         <div
           dangerouslySetInnerHTML=
           {{
-            __html: '<div class="c-exercise__text"><div><h2>&nbsp;<img alt=""src=""></h2></div><div><p>GLASBERGEN, R. Disponível em: www.glasbergen.com. Acesso em: 3 jul. 2015 (adaptado).</p><p>No cartum, a crítica está no fato de a sociedade exigir do adolescente que</p></div>',
+            __html:  memoQuestions[currentQuestionIndex]?.question || '',
           }}
         >
-
         </div>
+        </Box>
+        <Box marginTop="30px" display="flex" flexDirection="column">
+          {memoQuestions[currentQuestionIndex]?.answers.map((answer: any) => (
+            <div key={answer.id} dangerouslySetInnerHTML={{__html: answer.value}} />
+          ))}
+        </Box>
         <Box display="flex" 
         alignItems="center"
         justifyContent="center"
@@ -155,20 +203,18 @@ export function Exams() {
         <Button
           component="span"
           variant="outlined"
-          sx={{
-
-          }}
           startIcon={<Icon>arrow_back_ios</Icon>}
+          onClick={handleChangeQuestion('prev')}
+          disabled={currentQuestionIndex === 0}
         >
           Anterior
         </Button>
         <Button
           component="span"
           variant="contained"
-          sx={{
-
-          }}
           endIcon={<Icon>arrow_forward_ios</Icon>}
+          onClick={handleChangeQuestion('next')}
+          disabled={currentQuestionIndex === memoQuestions.length - 1}
         >
           Proximo
         </Button>

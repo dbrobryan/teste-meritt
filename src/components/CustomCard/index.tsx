@@ -11,57 +11,61 @@ import {
 } from "@mui/material";
 import { parseISO, format } from "date-fns";
 
-import { Exam } from "../../models";
+import { Proof } from "../../models";
 
 import { BorderLinearProgress, StyledBox } from "./styles";
 import { useHistory } from "react-router";
 import {} from "../../contexts";
 export interface CustomCardProps {
-  exam: Exam;
-  onSelectExam(exam: Exam): void;
+  proof: Proof;
+  onSelectExam(exam: Proof): void;
 }
 
 export function CustomCard({
-  exam,
+  proof,
   onSelectExam,
 }: CustomCardProps): JSX.Element {
   const theme = useTheme();
   const history = useHistory();
 
-  console.log({ exam });
+  console.log({ proof });
 
   const memoExamColor = useMemo(() => {
-    return exam.type === "EXAM" ? "#5653FF" : theme.palette.secondary.main;
-  }, [exam.type, theme.palette.secondary.main]);
+    return proof.exam.type === "EXAM" ? "#5653FF" : theme.palette.secondary.main;
+  }, [proof.exam.type, theme.palette.secondary.main]);
 
   const handleSelectExam = useCallback(() => {
-    onSelectExam(exam);
+    onSelectExam(proof);
     history.push("/exams");
-  }, [onSelectExam, exam, history]);
+  }, [onSelectExam, proof, history]);
 
-  const memoHour = useCallback(() => {
+  const memoHour = useMemo(() => {
     return format(
-      parseISO((exam?.events?.date || new Date().toISOString()) as string),
+       new Date(proof?.events?.date),
       "HH:mm:ss"
     );
-  }, [exam?.events?.date]);
+  }, [proof?.events?.date]);
+
+  console.log({memoHour})
 
   const memoDate = useCallback(() => {
     const fromDate = format(
-      parseISO((exam.events.date || new Date().toISOString()) as string),
+      parseISO((proof?.exam.events.date || new Date().toISOString()) as string),
       "dd/MM/yy"
     );
     const toDate = format(
-      parseISO((exam.events.limitDate || new Date().toISOString()) as string),
+      parseISO((proof?.exam.events.limitDate || new Date().toISOString()) as string),
       "dd/MM/yy"
     );
 
     return `De ${fromDate} a ${toDate}`;
-  }, [exam?.events?.date, exam?.events?.limitDate]);
+  }, [proof?.exam?.events?.date, proof?.exam?.events?.limitDate]);
 
-  const memoTotalQuestions = useCallback(() => {
-    return `${exam.data?.answeredItems}/${exam.data?.itemsTotal} questões`;
-  }, [exam]);
+  const memoTotalQuestions = useMemo(() => {
+    return `${proof?.exam?.data?.answeredItems || 0}/${proof?.exam.data?.itemsTotal} questões`;
+  }, [proof]);
+
+  console.log({proof})
 
   return (
     <Card
@@ -83,7 +87,7 @@ export function CustomCard({
               color: theme.palette.common.white,
             }}
           >
-            {exam.name}
+            {proof?.exam.name}
           </Button>
           <Typography
             sx={{ fontSize: 22, marginBottom: 4 }}
@@ -92,12 +96,12 @@ export function CustomCard({
             color="text.primary"
             gutterBottom
           >
-            {exam.description}
+            {proof?.exam.description}
           </Typography>
           <BorderLinearProgress
             variant="determinate"
-            value={25}
-            valueBuffer={100}
+            value={proof?.exam?.data?.answeredItems}
+            valueBuffer={proof?.exam.data?.itemsTotal}
             sx={{ height: 6, borderRadius: 0.5 }}
           />
           <StyledBox display="flex" alignItems="center">

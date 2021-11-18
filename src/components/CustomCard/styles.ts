@@ -16,6 +16,7 @@ export const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 }));
 
 export const StyledBox = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(1),
   "& > * + *": {
     marginLeft: theme.spacing(2.5),
   },
